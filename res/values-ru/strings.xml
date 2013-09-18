@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Diary</string>
+    <string name="hello_world">Привет мир!</string>
+    <string name="menu_settings">Настройки</string>
+    <string name="field_task_name">Текст</string>
+    <string name="menu_task">Добавить</string>
+    <string name="task_name">Задача</string>
+    <string name="btn_save">Сохранить</string>
+    <string name="btn_cancel">Отмена</string>
+    <string name="field_status_name">Статус</string>
+    <string name="field_begin_date_name">Дата</string>
+    <string name="field_priority_name">Приоритет</string>
+    <string name="btn_prev">Пред.</string>
+    <string name="btn_next">След.</string>
+    <string name="field_actual_date_name">Актуальная дата</string>
+    <string name="status_name">Статус</string>
+    <string name="priority_name">Приоритет</string>
+    <string name="field_deadline_name">Срок</string>
+    <string name="btn_filter">Найти</string>
+    <string name="field_task_id">ID</string>
+    <string name="status_yes">Готово</string>
+    <string name="status_no">В работе</string>
+   	<string name="field_direction_name">Направление</string>
+</resources>

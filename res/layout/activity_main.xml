@@ -1,0 +1,100 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    android:id="@+id/layout">
+	   
+   	<LinearLayout
+   	    android:id="@+id/tasks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:orientation="horizontal">
+    		<Button
+        		android:id="@+id/all"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:text="Все"
+        		android:textSize="8sp" />
+    	    	    		
+    		<Button
+        		android:id="@+id/priority_long"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:text="Долгосрочные" 
+        		android:textSize="8sp" />
+    		<Button
+        		android:id="@+id/impotant_fast"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:text="Важно и срочно" 
+        		android:textSize="8sp" />
+    		<Button
+        		android:id="@+id/impotant_nofast"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:text="Важно и не срочно" 
+        		android:textSize="8sp" />
+    		<TextView
+        		android:id="@+id/cur_priority"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:layout_alignParentLeft="true"
+        		android:textSize="12sp" />
+    				    				
+    	</LinearLayout>
+    	<LinearLayout
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:orientation="horizontal">
+			<Spinner
+			    android:id="@+id/direction"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"/>    				    				
+    	</LinearLayout>
+    	<LinearLayout
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:orientation="horizontal">
+    		<Button
+        		android:id="@+id/yesterday"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:text="yesterday"
+        		android:textSize="8sp" />
+    	    	
+    		<TextView
+        		android:id="@+id/cur_date"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:layout_alignParentLeft="true"
+        		android:textSize="12sp" />
+    		
+    		<Button
+        		android:id="@+id/tomorrow"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:text="tomorrow" 
+        		android:textSize="8sp" />
+    		<Button
+        		android:id="@+id/today"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:text="Сегодня" 
+        		android:textSize="8sp" />
+    		    				
+    </LinearLayout>
+	
+	<view
+	    class="smallmazila.diary.view.TaskTouchListView"
+	    android:id="@+id/list"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:drawSelectorOnTop="false"
+	    />
+    </LinearLayout>
+</LinearLayout>

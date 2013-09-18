@@ -1,0 +1,169 @@
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+<LinearLayout
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical"
+	android:id="@+id/task">
+
+
+    <LinearLayout 
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:orientation="horizontal"
+        android:padding="10px">
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/field_task_name"
+            android:paddingRight="10px"/>
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:id="@+id/task_name"/>
+        
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:orientation="horizontal"
+        android:padding="10px">
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/field_begin_date_name"
+            android:paddingRight="10px"/>
+
+        <TextView
+            android:id="@+id/begin_date_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+        
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:orientation="horizontal"
+        android:padding="10px">
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/field_actual_date_name"
+            android:paddingRight="10px"/>
+        <TextView
+            android:id="@+id/actual_date_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold" />	
+        
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:orientation="horizontal"
+        android:padding="10px">
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/field_status_name"
+            android:paddingRight="10px"/>
+
+        <CheckBox
+            android:id="@+id/status_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="" />
+        
+    </LinearLayout>
+
+    <LinearLayout 
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:orientation="horizontal"
+        android:padding="10px">
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/field_priority_name"
+            android:paddingRight="10px"/>
+ 		<Spinner
+ 		    android:id="@+id/priority_name"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+			android:drawSelectorOnTop="true"
+ 		    />
+        
+    </LinearLayout>
+        <LinearLayout 
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:orientation="horizontal"
+        android:padding="10px">
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/field_direction_name"
+            android:paddingRight="10px"/>
+ 		<Spinner
+ 		    android:id="@+id/direction_name"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+			android:drawSelectorOnTop="true"
+ 		    />
+        
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:orientation="horizontal"
+        android:padding="10px">
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/field_deadline_name"
+            android:paddingRight="10px"/>
+        <TextView
+            android:id="@+id/deadline_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold" />        
+    </LinearLayout>
+        <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:orientation="horizontal"
+        android:gravity="right"
+        android:layout_gravity="right">
+        
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            
+            android:text="@string/btn_save"
+            android:id="@+id/button_save"/>
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            
+            android:text="@string/btn_cancel"
+            android:id="@+id/button_cancel"/>
+        
+	</LinearLayout>    
+</LinearLayout>
+    </ScrollView>
