@@ -21,6 +21,7 @@ public class DiaryDbHelper extends SQLiteOpenHelper
 	public static final String TASK_DIRECTION_ID = "direction_id";
 	
 	public static final String TABLE_DIRECTIONS = "directions";
+	public static final String DIRECTIONS_ID = "_id";
 	public static final String DIRECTIONS_NAME = "name";
 	public static final String DIRECTIONS_STATUS = "status";
 	public static final String DIRECTIONS_USER_ID = "user_id";

@@ -3,13 +3,13 @@ package smallmazila.diary;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 import smallmazila.diary.animation.FlipActivities;
 import smallmazila.diary.db.DiaryDbHelper;
 import smallmazila.diary.db.TaskProvider;
 import smallmazila.diary.framework.CursorFilter;
 import smallmazila.diary.framework.DiaryActivity;
-import smallmazila.diary.framework.DiaryCursor;
 import smallmazila.diary.util.DateUtil;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -35,13 +35,11 @@ public class TaskActivity extends DiaryActivity{
 	private TextView mDeadline;
 	static final int ACTUAL_DATE_DIALOG_ID = 1;
 	static final int DEADLINE_DIALOG_ID = 2;
-	private DiaryCursor cursor;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.task_content);
-
 		mName = (EditText)findViewById(R.id.task_name);
 		mBeginDate = (TextView)findViewById(R.id.begin_date_name);		
 		mActualDate = (TextView)findViewById(R.id.actual_date_name);
@@ -67,15 +65,7 @@ public class TaskActivity extends DiaryActivity{
 			}
 		});
 		mDirection  = (Spinner)findViewById(R.id.direction_name);
-		
-		cursor = new DiaryCursor(getApplicationContext(),new CursorFilter());
-		Bundle extras = getIntent().getExtras();
-		cursor.filter = (CursorFilter)extras.get(CursorFilter.DIARYCURSORFILTER);
-		cursor.queryTaskList();
-		cursor.queryDirections();
-
-		fillForm();
-		
+				
 		final Button btnOk = (Button)findViewById(R.id.button_save);		
 		btnOk.setOnClickListener(new View.OnClickListener() {			
 			@Override
@@ -98,8 +88,17 @@ public class TaskActivity extends DiaryActivity{
 				}
 			}
 		});
-		mFliper = new FlipActivities(this, (LinearLayout)findViewById(R.id.task), null);
-		mFliper.initialize();
+		mFliper.fromLayout = (LinearLayout)findViewById(R.id.task);
+	}
+	
+	@Override
+	public void onResume(){
+		super.onResume();
+		Bundle extras = getIntent().getExtras();
+		cursor.filter = (CursorFilter)extras.get(CursorFilter.DIARYCURSORFILTER);
+		cursor.queryTaskList();
+		cursor.queryDirections();
+		fillForm();
 	}
 	
 	
@@ -149,45 +148,41 @@ public class TaskActivity extends DiaryActivity{
 	}
 	
 	private int getDirPosition(int dirId){
-		if(cursor.mDirCursor.moveToFirst()){
-			do{
-				if(cursor.mDirCursor.getInt(0) == dirId)
-					return cursor.mDirCursor.getPosition();
-			}while(cursor.mDirCursor.moveToNext());
+		for(int i = 0; i < cursor.mDirectionList.size(); i++){
+			if(Integer.valueOf(cursor.mDirectionList.get(i).get(DiaryDbHelper.DIRECTIONS_ID).toString()) == dirId)
+				return i+1;			
 		}
 		return -1;
 	}
 	
 	private void fillForm(){
-		//cursor.queryDirections();
 		if(cursor.filter.mTaskListPosition!=-1){
-			
-			cursor.mTaskListCursor.moveToPosition((int)cursor.filter.mTaskListPosition);
-			cursor.filter.mTaskId = cursor.mTaskListCursor.getLong(0);
-			mName.setText(cursor.mTaskListCursor.getString(1));
+			Map<String, Object> hm = cursor.mTaskList.get((int)cursor.filter.mTaskListPosition); 
+			cursor.filter.mTaskId = Long.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_ID).toString());			
+			mName.setText(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_NAME).toString());
 			try{
-				mBeginDate.setText(DateUtil.getClientDate(cursor.mTaskListCursor.getString(2)));
+				mBeginDate.setText(DateUtil.getClientDate(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_BEGIN_DATE).toString()));
 			}catch(ParseException pe){
 			}
 			try{
-				mActualDate.setText(DateUtil.getClientDate(cursor.mTaskListCursor.getString(3)));
+				mActualDate.setText(DateUtil.getClientDate(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_ACTUAL_DATE).toString()));
 			}catch(ParseException pe){
 			}
 			try{
-				mDeadline.setText(DateUtil.getClientDate(cursor.mTaskListCursor.getString(7)));
+				mDeadline.setText(DateUtil.getClientDate(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_DEADLINE).toString()));
 			}catch(ParseException pe){
 			}
-			mStatus.setChecked(cursor.mTaskListCursor.getInt(4)==TaskItem.STATUS_YES);
-			mPriority.setSelection(cursor.mTaskListCursor.getInt(5));
-			mDirection.setAdapter(cursor.getDirectionAdapter(false));
-			mDirection.setSelection(getDirPosition(cursor.mTaskListCursor.getInt(8)));			
+			mStatus.setChecked(Integer.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_STATUS).toString())==TaskItem.STATUS_YES);
+			mPriority.setSelection(Integer.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_PRIORITY).toString()));
+			mDirection.setAdapter(cursor.getDirectionSpinnerAdapter(false));
+			mDirection.setSelection(getDirPosition(Integer.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_DIRECTION_ID).toString())));			
 		}else{
 			mBeginDate.setText(DateUtil.getClientDate(DateUtil.getToday()));
 			mActualDate.setText(DateUtil.getClientDate(DateUtil.getToday()));
 			mDeadline.setText(DateUtil.getClientDate(DateUtil.getToday()));
 			mStatus.setChecked(TaskItem.STATUS_NO==TaskItem.STATUS_YES);
 			mPriority.setSelection(TaskItem.PRIORITY_IMPORTANT_FAST);
-			mDirection.setAdapter(cursor.getDirectionAdapter(false));
+			mDirection.setAdapter(cursor.getDirectionSpinnerAdapter(false));
 		}
 	}
 	
@@ -209,8 +204,8 @@ public class TaskActivity extends DiaryActivity{
 			values.put(DiaryDbHelper.TASK_DEADLINE, DateUtil.getDbDate(mDeadline.getText().toString()));
 		}catch(ParseException pe){
 		}
-		cursor.mDirCursor.moveToPosition(mDirection.getSelectedItemPosition());
-		values.put(DiaryDbHelper.TASK_DIRECTION_ID, cursor.mDirCursor.getInt(0));
+		Map<String, Object> hm = cursor.mDirectionList.get(mDirection.getSelectedItemPosition()); 					
+		values.put(DiaryDbHelper.TASK_DIRECTION_ID, Integer.valueOf(hm.get(DiaryDbHelper.DIRECTIONS_ID).toString()));
 		if(cursor.filter.mTaskId != -1){
 			getContentResolver().update(TaskProvider.CONTENT_URI
 										, values

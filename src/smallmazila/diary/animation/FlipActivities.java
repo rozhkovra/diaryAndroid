@@ -16,10 +16,8 @@ public class FlipActivities {
 	public enum ACTIVITYSTATUS {NONE, PAUSED, BACKPRESSED}
 	public ACTIVITYSTATUS activityStatus;
 	
-	public FlipActivities(Activity fromActivity, LinearLayout fromLayout, Intent toIntent){
+	public FlipActivities(Activity fromActivity){
 		this.fromActivity = fromActivity;
-		this.fromLayout = fromLayout;
-		this.toIntent = toIntent;
 	}
 	
 	public void initialize(){

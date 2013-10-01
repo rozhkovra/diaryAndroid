@@ -1,28 +1,21 @@
 package smallmazila.diary.framework;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
 import smallmazila.diary.R;
-import smallmazila.diary.adapter.TaskListAdapter;
+import smallmazila.diary.adapter.TaskListSimpleAdapter;
 import smallmazila.diary.db.DiaryDbHelper;
 import smallmazila.diary.util.DateUtil;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
-import android.widget.SimpleCursorAdapter;
-import android.widget.Spinner;
 
 public class DiaryCursor {
-	public Cursor mDirCursor = null;
-	public Cursor mTaskListCursor = null;
-	public Cursor mTaskCursor = null;
-	private ArrayList <HashMap<String, Object>> mDirectionList = null;
-	private SQLiteDatabase mDb;
+	public ArrayList <HashMap<String, Object>> mDirectionList = null;
+	public ArrayList <HashMap<String, Object>> mTaskList = null;
 	public CursorFilter filter;
 	private Context context = null;
 	private static final String[] mViewContent = new String[]{DiaryDbHelper.TASK_DIRECTIONS_TASK_ID
@@ -51,56 +44,75 @@ public class DiaryCursor {
 	}
 	
 	public void queryTaskList(){
-		if(mDb==null || !mDb.isOpen())
-			mDb =  (new DiaryDbHelper(context)).getWritableDatabase();
+		if(mTaskList == null)
+			mTaskList = new ArrayList<HashMap<String,Object>>();
+		else
+			mTaskList.clear();
+		SQLiteDatabase db =  (new DiaryDbHelper(context)).getWritableDatabase();
 		String where = DiaryDbHelper.TASK_DIRECTIONS_TASK_ACTUAL_DATE+"='"+DateUtil.getDbDate(filter.mCurDate)+"'";
 		if(filter.mCurPriority>=0)
 			where += " and "+DiaryDbHelper.TASK_DIRECTIONS_TASK_PRIORITY+"="+filter.mCurPriority;				
 		if(filter.mCurDirection>=0)
 			where += " and "+DiaryDbHelper.TASK_DIRECTIONS_TASK_DIRECTION_ID+"="+filter.mCurDirection;
-		mTaskListCursor = mDb.query(DiaryDbHelper.VIEW_TASK_DIRECTION, mViewContent, where, null, null, null, mViewOrderBy);
+		Cursor cursor = db.query(DiaryDbHelper.VIEW_TASK_DIRECTION, mViewContent, where, null, null, null, mViewOrderBy);
+		HashMap<String, Object> hm;
+		if(cursor.moveToFirst()){
+			do{
+				hm = new HashMap<String, Object>();
+				hm.put(DiaryDbHelper.TASK_DIRECTIONS_TASK_ID, cursor.getLong(0));
+				hm.put(DiaryDbHelper.TASK_DIRECTIONS_TASK_NAME, cursor.getString(1));
+				hm.put(DiaryDbHelper.TASK_DIRECTIONS_TASK_BEGIN_DATE, cursor.getString(2));
+				hm.put(DiaryDbHelper.TASK_DIRECTIONS_TASK_ACTUAL_DATE, cursor.getString(3));
+				hm.put(DiaryDbHelper.TASK_DIRECTIONS_TASK_STATUS, cursor.getInt(4));
+				hm.put(DiaryDbHelper.TASK_DIRECTIONS_TASK_PRIORITY, cursor.getInt(5));
+				hm.put(DiaryDbHelper.TASK_DIRECTIONS_TASK_USER_ID, cursor.getInt(6));
+				hm.put(DiaryDbHelper.TASK_DIRECTIONS_TASK_DEADLINE, cursor.getString(7));
+				hm.put(DiaryDbHelper.TASK_DIRECTIONS_TASK_DIRECTION_ID, cursor.getLong(8));
+				hm.put(DiaryDbHelper.TASK_DIRECTIONS_DIRECTIONS_NAME, cursor.getString(9));
+				hm.put(DiaryDbHelper.TASK_DIRECTIONS_DIRECTIONS_STATUS, cursor.getInt(10));
+				hm.put(DiaryDbHelper.TASK_DIRECTIONS_DIRECTIONS_USER_ID, cursor.getInt(11));
+	            mTaskList.add(hm);
+			}while(cursor.moveToNext());
+		}
+		cursor.close();
+		db.close();
 	}
 	
-	public void queryTask(){
-		if(mDb==null || !mDb.isOpen())
-			mDb =  (new DiaryDbHelper(context)).getWritableDatabase();
-		mTaskCursor = mDb.query(DiaryDbHelper.VIEW_TASK_DIRECTION, mViewContent, DiaryDbHelper.TASK_DIRECTIONS_TASK_ID+"="+filter.mTaskId, null, null, null, mViewOrderBy);
-	}
-		
 	public void queryDirections(){
-		if(mDirCursor!=null && !mDirCursor.isClosed())
-			mDirCursor.close();
-		if(mDb==null || !mDb.isOpen())
-			mDb =  (new DiaryDbHelper(context)).getWritableDatabase();
+		SQLiteDatabase db =  (new DiaryDbHelper(context)).getWritableDatabase();
 		if(mDirectionList == null)
 			mDirectionList = new ArrayList<HashMap<String,Object>>();
 		else
 			mDirectionList.clear();
-		mDirCursor = mDb.query(DiaryDbHelper.TABLE_DIRECTIONS, mDirContent, DiaryDbHelper.DIRECTIONS_STATUS+"=1", null, null, null, null);
+		Cursor cursor = db.query(DiaryDbHelper.TABLE_DIRECTIONS, mDirContent, DiaryDbHelper.DIRECTIONS_STATUS+"=1", null, null, null, null);
 		HashMap<String, Object> hm;
 		hm = new HashMap<String, Object>();
+		hm.put(DiaryDbHelper.DIRECTIONS_ID, -1);
 		hm.put(DiaryDbHelper.DIRECTIONS_NAME, "Все");
 		mDirectionList.add(hm);
 
-		if(mDirCursor.moveToFirst()){
+		if(cursor.moveToFirst()){
 			do{
 				hm = new HashMap<String, Object>();
-				hm.put(DiaryDbHelper.DIRECTIONS_NAME, mDirCursor.getString(1));
+				hm.put(DiaryDbHelper.DIRECTIONS_ID, cursor.getLong(0));
+				hm.put(DiaryDbHelper.DIRECTIONS_NAME, cursor.getString(1));
 	            mDirectionList.add(hm);
-			}while(mDirCursor.moveToNext());
+			}while(cursor.moveToNext());
 		}
+		cursor.close();
+		db.close();		
 	}
 	
 	public ListAdapter getTaskListAdapter(){
-		return new TaskListAdapter(context
-					, R.layout.task_list_item
-					, mTaskListCursor
-					, new String[]{DiaryDbHelper.TASK_DIRECTIONS_TASK_NAME, DiaryDbHelper.TASK_DIRECTIONS_DIRECTIONS_NAME, DiaryDbHelper.TASK_DIRECTIONS_TASK_DEADLINE, DiaryDbHelper.TASK_DIRECTIONS_TASK_NAME}
-					, new int[]{R.id.name, R.id.direction_name, R.id.deadline, R.id.detail}
-					);
+		return new TaskListSimpleAdapter(context
+				, mTaskList 
+				, R.layout.task_list_item 										
+				, new String[]{DiaryDbHelper.TASK_DIRECTIONS_TASK_NAME, DiaryDbHelper.TASK_DIRECTIONS_DIRECTIONS_NAME, DiaryDbHelper.TASK_DIRECTIONS_TASK_DEADLINE, DiaryDbHelper.TASK_DIRECTIONS_TASK_NAME}
+				, new int[]{R.id.name, R.id.direction_name, R.id.deadline, R.id.detail}
+		);
 	}
 	
-	public SimpleAdapter getDirectionAdapter(boolean withAll){
+	public SimpleAdapter getDirectionSpinnerAdapter(boolean withAll){
 		if(!withAll){
 			HashMap<String, Object> hm = mDirectionList.get(0);
 			if(hm!=null && "Все".equals(hm.get(DiaryDbHelper.DIRECTIONS_NAME)))
@@ -115,13 +127,13 @@ public class DiaryCursor {
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		return adapter;
 	}
-	
-	public void close(){
-		if(mTaskListCursor!=null && !mTaskListCursor.isClosed())
-			mTaskListCursor.close();
-		if(mDirCursor!=null && !mDirCursor.isClosed())
-			mDirCursor.close();
-		if(mDb!=null && mDb.isOpen())
-			mDb.close();
+
+	public SimpleAdapter getDirectionListAdapter(){
+		return new SimpleAdapter(context
+				, mDirectionList 
+				, R.layout.direction_item 										
+				, new String[]{DiaryDbHelper.DIRECTIONS_NAME}
+				, new int[]{R.id.name}
+		);
 	}
 }

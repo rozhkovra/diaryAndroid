@@ -1,10 +1,13 @@
 package smallmazila.diary;
 
+import java.util.Map;
+
 import smallmazila.diary.animation.FlipActivities;
 import smallmazila.diary.db.DiaryDbHelper;
 import smallmazila.diary.db.TaskProvider;
 import smallmazila.diary.framework.CursorFilter;
 import smallmazila.diary.framework.DiaryActivity;
+import smallmazila.diary.listener.OnTaskTouchListener;
 import smallmazila.diary.util.DateUtil;
 import smallmazila.diary.view.TaskTouchListView;
 import android.content.ContentValues;
@@ -32,8 +35,6 @@ public class TaskListActivity extends DiaryActivity  {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		mFliper = new FlipActivities(this, (LinearLayout)findViewById(R.id.layout), null);
-		mFliper.initialize();
 		mList = (TaskTouchListView)findViewById(R.id.list);
 		//mList.setOnTouchListener(new OnTaskTouchListener(getApplicationContext(),mList));
 		
@@ -52,10 +53,10 @@ public class TaskListActivity extends DiaryActivity  {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> adapter, View view, int position, long id){
 				cursor.filter.mTaskListPosition = position;
-				cursor.filter.mTaskId = id;
-				cursor.mTaskListCursor.moveToPosition((int)cursor.filter.mTaskListPosition);
-				int status = cursor.mTaskListCursor.getInt(4);
-				String text = cursor.mTaskListCursor.getString(1);
+				Map<String, Object> hm = cursor.mTaskList.get(position);				 
+				cursor.filter.mTaskId = Long.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_ID).toString());
+				int status = Integer.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_STATUS).toString());
+				String text = hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_NAME).toString();
 				String statusText = status==1?TaskItem.getStatusName(TaskItem.STATUS_NO):TaskItem.getStatusName(TaskItem.STATUS_YES);				
 				ContentValues values =  new ContentValues(2);
 				values.put(DiaryDbHelper.TASK_STATUS, 
@@ -78,8 +79,8 @@ public class TaskListActivity extends DiaryActivity  {
 				if(position==0)
 					cursor.filter.mCurDirection = -1;
 				else{
-					cursor.mDirCursor.moveToPosition(position-1);
-					cursor.filter.mCurDirection = cursor.mDirCursor.getInt(0);
+					Map<String, Object> hm = cursor.mDirectionList.get(position); 					
+					cursor.filter.mCurDirection = Integer.valueOf(hm.get(DiaryDbHelper.DIRECTIONS_ID).toString());
 				}
 				cursor.queryTaskList();
 				mList.setAdapter(cursor.getTaskListAdapter());
@@ -168,7 +169,7 @@ public class TaskListActivity extends DiaryActivity  {
 				changeFilters();
 			}
 		});
-		
+		mFliper.fromLayout = (LinearLayout)findViewById(R.id.layout);
 	}
 	
 	private void changeFilters(){
@@ -224,7 +225,7 @@ public class TaskListActivity extends DiaryActivity  {
 	public void onResume(){
 		super.onResume();
 		cursor.queryDirections();
-		mDirection.setAdapter(cursor.getDirectionAdapter(true));
+		mDirection.setAdapter(cursor.getDirectionSpinnerAdapter(true));
 		cursor.queryTaskList();
 		mList.setAdapter(cursor.getTaskListAdapter());
 		changeFilters();
@@ -241,8 +242,8 @@ public class TaskListActivity extends DiaryActivity  {
 		Intent intent = new Intent();
 		intent.putExtra(CursorFilter.DIARYCURSORFILTER, cursor.filter);
 		if(cursor.filter.mTaskListPosition != -1){
-			cursor.mTaskListCursor.moveToPosition((int)cursor.filter.mTaskListPosition);
-			cursor.filter.mTaskId = cursor.mTaskListCursor.getLong(0);
+			Map<String, Object> hm = cursor.mTaskList.get((int)cursor.filter.mTaskListPosition); 
+			cursor.filter.mTaskId = Long.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_ID).toString());
 			intent.setClass(this, TaskViewActivity.class);
 		}
 		else{
