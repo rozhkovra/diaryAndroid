@@ -21,8 +21,8 @@ public class DateUtil {
 		return sdfClient.format(date);
 	}
 	
-	public static Date getDate(String date) throws ParseException{
-		return sdfClient.parse(date);
+	public static Date getDate(String clientDate) throws ParseException{
+		return sdfClient.parse(clientDate);
 	}
 	
 	public static Date getYesterday(Date date){
@@ -67,5 +67,10 @@ public class DateUtil {
 	
 	public static Date getToday(){
 		return new Date();
+	}
+	
+	public static Date plusDays(Date srcDate, int days){
+		c.setTimeInMillis(srcDate.getTime()+days*24*60*60*1000);
+		return c.getTime();
 	}
 }

@@ -1,12 +1,17 @@
 package smallmazila.diary.framework;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import smallmazila.diary.R;
+import smallmazila.diary.TaskItem;
 import smallmazila.diary.adapter.TaskListSimpleAdapter;
 import smallmazila.diary.db.DiaryDbHelper;
+import smallmazila.diary.db.TaskProvider;
 import smallmazila.diary.util.DateUtil;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -135,5 +140,74 @@ public class DiaryCursor {
 				, new String[]{DiaryDbHelper.DIRECTIONS_NAME}
 				, new int[]{R.id.name}
 		);
+	}
+	
+	public long getTaskIdByPosition(int position){
+		Map<String, Object> hm = mTaskList.get(position);				 
+		return Long.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_ID).toString());
+	}
+
+	public void taskNextDay(int pos) {
+		// TODO Auto-generated method stub
+		Map<String, Object> hm = mTaskList.get(pos);
+		String actualDate = hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_ACTUAL_DATE).toString();
+		try{
+			Date d = DateUtil.getDate(DateUtil.getClientDate(actualDate));
+			d = DateUtil.plusDays(d, 1);
+			ContentValues values =  new ContentValues(2);
+			values.put(DiaryDbHelper.TASK_ACTUAL_DATE, 
+						DateUtil.getDbDate(d));
+			context.getContentResolver().update(TaskProvider.CONTENT_URI
+						, values
+						, TaskItem.ID+"="+hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_ID).toString(), null);
+		}catch(Exception e){
+			
+		}
+	}
+	
+	public void taskPrevDay(int pos) {
+		// TODO Auto-generated method stub
+		Map<String, Object> hm = mTaskList.get(pos);
+		String actualDate = hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_ACTUAL_DATE).toString();
+		try{
+			Date d = DateUtil.getDate(DateUtil.getClientDate(actualDate));
+			d = DateUtil.plusDays(d, -1);
+			ContentValues values =  new ContentValues(2);
+			values.put(DiaryDbHelper.TASK_ACTUAL_DATE, 
+						DateUtil.getDbDate(d));
+			context.getContentResolver().update(TaskProvider.CONTENT_URI
+						, values
+						, TaskItem.ID+"="+hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_ID).toString(), null);
+		}catch(Exception e){
+			
+		}
+	}
+
+	public void taskLower(int pos) {
+		// TODO Auto-generated method stub
+		Map<String, Object> hm = mTaskList.get(pos);
+		int priority = Integer.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_PRIORITY).toString());
+		if(priority!=TaskItem.PRIORITY_IMPORTANT_NOFAST){
+			ContentValues values =  new ContentValues(2);
+			values.put(DiaryDbHelper.TASK_PRIORITY, 
+						priority-1);
+			context.getContentResolver().update(TaskProvider.CONTENT_URI
+						, values
+						, TaskItem.ID+"="+hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_ID).toString(), null);
+		}
+	}
+	
+	public void taskHigher(int pos) {
+		// TODO Auto-generated method stub
+		Map<String, Object> hm = mTaskList.get(pos);
+		int priority = Integer.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_PRIORITY).toString());
+		if(priority!=TaskItem.PRIORITY_LONG){
+			ContentValues values =  new ContentValues(2);
+			values.put(DiaryDbHelper.TASK_PRIORITY, 
+						priority+1);
+			context.getContentResolver().update(TaskProvider.CONTENT_URI
+						, values
+						, TaskItem.ID+"="+hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_ID).toString(), null);
+		}
 	}
 }

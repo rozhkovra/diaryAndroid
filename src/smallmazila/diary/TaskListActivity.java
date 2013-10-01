@@ -36,7 +36,7 @@ public class TaskListActivity extends DiaryActivity  {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		mList = (TaskTouchListView)findViewById(R.id.list);
-		//mList.setOnTouchListener(new OnTaskTouchListener(getApplicationContext(),mList));
+		//mList.setOnTouchListener(new OnTaskTouchListener(getApplicationContext(),mList,cursor));
 		
 		mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
@@ -54,7 +54,7 @@ public class TaskListActivity extends DiaryActivity  {
 			public boolean onItemLongClick(AdapterView<?> adapter, View view, int position, long id){
 				cursor.filter.mTaskListPosition = position;
 				Map<String, Object> hm = cursor.mTaskList.get(position);				 
-				cursor.filter.mTaskId = Long.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_ID).toString());
+				cursor.filter.mTaskId = cursor.getTaskIdByPosition(position);
 				int status = Integer.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_STATUS).toString());
 				String text = hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_NAME).toString();
 				String statusText = status==1?TaskItem.getStatusName(TaskItem.STATUS_NO):TaskItem.getStatusName(TaskItem.STATUS_YES);				
@@ -242,8 +242,7 @@ public class TaskListActivity extends DiaryActivity  {
 		Intent intent = new Intent();
 		intent.putExtra(CursorFilter.DIARYCURSORFILTER, cursor.filter);
 		if(cursor.filter.mTaskListPosition != -1){
-			Map<String, Object> hm = cursor.mTaskList.get((int)cursor.filter.mTaskListPosition); 
-			cursor.filter.mTaskId = Long.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_ID).toString());
+			cursor.filter.mTaskId = cursor.getTaskIdByPosition((int)cursor.filter.mTaskListPosition);
 			intent.setClass(this, TaskViewActivity.class);
 		}
 		else{
