@@ -147,6 +147,17 @@ public class DiaryCursor {
 		return Long.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_ID).toString());
 	}
 
+	public int getTaskPositionByTaskId(long taskId){
+		int position = -1;
+		int counter = -1;
+		for(Map<String, Object> hm : mTaskList){
+			counter++;
+			if(Long.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_ID).toString()).equals(taskId))
+				position=counter;
+		}
+		return position;
+	}
+	
 	public void taskNextDay(int pos) {
 		// TODO Auto-generated method stub
 		Map<String, Object> hm = mTaskList.get(pos);

@@ -187,10 +187,11 @@ public class TaskListActivity extends DiaryActivity  {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu){
 		menu.add(Menu.NONE, IDM_ADD, Menu.NONE, R.string.menu_task)
-			.setIcon(R.drawable.ic_launcher);
+			.setIcon(R.drawable.plus);
 		menu.add(Menu.NONE, IDM_MOVE, Menu.NONE, "Move")
 			.setIcon(R.drawable.move);
-		menu.add(Menu.NONE, IDM_SETTINGS, Menu.NONE, "Settings");
+		menu.add(Menu.NONE, IDM_SETTINGS, Menu.NONE, "Settings")
+			.setIcon(R.drawable.settings);;
 		return (super.onCreateOptionsMenu(menu));
 	}
 	

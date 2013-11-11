@@ -3,7 +3,6 @@ package smallmazila.diary;
 import java.text.ParseException;
 import java.util.Map;
 
-import smallmazila.diary.animation.FlipActivities;
 import smallmazila.diary.db.DiaryDbHelper;
 import smallmazila.diary.framework.CursorFilter;
 import smallmazila.diary.framework.DiaryActivity;
@@ -33,6 +32,8 @@ public class TaskViewActivity extends DiaryActivity{
 		mDeadline = (TextView)findViewById(R.id.deadline_view);
 		mDirection  = (TextView)findViewById(R.id.direction_view);
 		mStatus = (TextView)findViewById(R.id.status_view);
+		Bundle extras = getIntent().getExtras();
+		cursor.filter = (CursorFilter)extras.get(CursorFilter.DIARYCURSORFILTER);
 		
 		Button editBtn = (Button)findViewById(R.id.editBtn);
 		editBtn.setOnClickListener(new OnClickListener() {
@@ -60,14 +61,29 @@ public class TaskViewActivity extends DiaryActivity{
 	@Override
 	public void onResume(){
 		super.onResume();
-		Bundle extras = getIntent().getExtras();
-		cursor.filter = (CursorFilter)extras.get(CursorFilter.DIARYCURSORFILTER);
+
 		cursor.queryTaskList();
 		cursor.queryDirections();
-		fillForm();
+		if(cursor.mTaskList.size() > 0)
+			fillForm();
+		else{
+			setContentView(R.layout.activity_task_view_empty);
+			Button toTaskListBtn = (Button)findViewById(R.id.toTaskList);
+			toTaskListBtn.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					mFliper.fromLayout = (LinearLayout)findViewById(R.id.task_view_empty);
+					mFliper.backPressed();					
+					if(mClickId != -1){
+						mSoundPool.play(mClickId, 1, 1, 0, 0, 1);
+					}
+				}
+			});
+		}
 	}
 	
 	private void fillForm(){
+		cursor.filter.mTaskListPosition = cursor.getTaskPositionByTaskId(cursor.filter.mTaskId);
 		Map<String, Object> hm = cursor.mTaskList.get((int)cursor.filter.mTaskListPosition); 		
 		setTitle("Task "+(cursor.filter.mTaskListPosition+1)+" from "+cursor.mTaskList.size());
 		cursor.filter.mTaskId = Long.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_ID).toString());	
@@ -86,6 +102,7 @@ public class TaskViewActivity extends DiaryActivity{
 					@Override
 					public void onClick(View v) {
 						cursor.filter.mTaskListPosition = cursor.filter.mTaskListPosition-1;
+						cursor.filter.mTaskId = cursor.getTaskIdByPosition((int)cursor.filter.mTaskListPosition);
 						fillForm();
 						if(mClickId != -1){
 							mSoundPool.play(mClickId, 1, 1, 0, 0, 1);
@@ -106,7 +123,8 @@ public class TaskViewActivity extends DiaryActivity{
 				nextBtn.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						cursor.filter.mTaskListPosition = cursor.filter.mTaskListPosition+1; 
+						cursor.filter.mTaskListPosition = cursor.filter.mTaskListPosition+1;
+						cursor.filter.mTaskId = cursor.getTaskIdByPosition((int)cursor.filter.mTaskListPosition);
 						fillForm();
 						if(mClickId != -1){
 							mSoundPool.play(mClickId, 1, 1, 0, 0, 1);

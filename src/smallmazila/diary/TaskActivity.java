@@ -150,7 +150,7 @@ public class TaskActivity extends DiaryActivity{
 	private int getDirPosition(int dirId){
 		for(int i = 0; i < cursor.mDirectionList.size(); i++){
 			if(Integer.valueOf(cursor.mDirectionList.get(i).get(DiaryDbHelper.DIRECTIONS_ID).toString()) == dirId)
-				return i+1;			
+				return i;			
 		}
 		return -1;
 	}

@@ -1,16 +1,17 @@
 package smallmazila.diary;
 
-import smallmazila.diary.animation.FlipActivities;
 import smallmazila.diary.db.DiaryDbHelper;
 import smallmazila.diary.db.DirectionProvider;
 import smallmazila.diary.framework.DiaryActivity;
 import android.content.ContentValues;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class DirectionsActivity extends DiaryActivity {
 	private ListView mList;
@@ -22,6 +23,15 @@ public class DirectionsActivity extends DiaryActivity {
 		mList = (ListView)findViewById(R.id.list);
 		cursor.queryDirections();
 		mList.setAdapter(cursor.getDirectionListAdapter());
+		mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> adapter, View view, int position, long id){
+				Toast.makeText(getApplicationContext(), "Hello!", Toast.LENGTH_SHORT).show();
+				if(mClickId != -1){
+					mSoundPool.play(mClickId, 1, 1, 0, 0, 1);
+				}
+			}
+		});
 		
 		Button btnAdd = (Button)findViewById(R.id.btnAdd);
 		btnAdd.setOnClickListener(new View.OnClickListener() {
