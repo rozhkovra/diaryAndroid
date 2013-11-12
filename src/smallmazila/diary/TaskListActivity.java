@@ -2,12 +2,10 @@ package smallmazila.diary;
 
 import java.util.Map;
 
-import smallmazila.diary.animation.FlipActivities;
 import smallmazila.diary.db.DiaryDbHelper;
 import smallmazila.diary.db.TaskProvider;
 import smallmazila.diary.framework.CursorFilter;
 import smallmazila.diary.framework.DiaryActivity;
-import smallmazila.diary.listener.OnTaskTouchListener;
 import smallmazila.diary.util.DateUtil;
 import smallmazila.diary.view.TaskTouchListView;
 import android.content.ContentValues;
@@ -179,8 +177,8 @@ public class TaskListActivity extends DiaryActivity  {
 		btnYesterday.setText(DateUtil.getDate(DateUtil.getYesterday(cursor.filter.mCurDate))+"("+DateUtil.getDayOfWeekShort(DateUtil.getYesterday(cursor.filter.mCurDate))+")");
 		final TextView curDateTxtView = (TextView)findViewById(R.id.cur_date);
 		curDateTxtView.setText(DateUtil.getDate(cursor.filter.mCurDate)+"("+DateUtil.getDayOfWeekShort(cursor.filter.mCurDate)+")");
-		TextView curPriority = (TextView)findViewById(R.id.cur_priority);
-		curPriority.setText(TaskItem.getPriorityName(cursor.filter.mCurPriority));
+		//TextView curPriority = (TextView)findViewById(R.id.cur_priority);
+		//curPriority.setText(TaskItem.getPriorityName(cursor.filter.mCurPriority));
 		mDirection.setSelection(cursor.filter.mCurDirection);
 	}
 	

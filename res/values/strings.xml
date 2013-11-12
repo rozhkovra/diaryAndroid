@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Diary</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="field_task_name">Name</string>
+    <string name="menu_task">Add Task</string>
+    <string name="task_name">Task</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="field_status_name">Status</string>
+    <string name="field_begin_date_name">Date</string>
+    <string name="field_priority_name">Priority</string>
+    <string name="btn_prev">Prev</string>
+    <string name="btn_next">Next</string>
+    <string name="field_actual_date_name">Actual date</string>
+    <string name="status_name">status</string>
+    <string name="priority_name">Priority</string>
+    <string name="field_deadline_name">Deadline</string>
+    <string name="btn_filter">Find</string>
+    <string name="field_task_id">ID</string>
+    <string name="status_yes">Done</string>
+    <string name="status_no">Progress</string>
+    <string name="field_direction_name">Direction</string>
+    <string name="title_activity_task_view">TaskViewActivity</string>
+    <string name="action_settings">Settings</string>
+
+</resources>

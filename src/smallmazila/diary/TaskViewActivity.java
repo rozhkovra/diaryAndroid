@@ -84,17 +84,19 @@ public class TaskViewActivity extends DiaryActivity{
 	
 	private void fillForm(){
 		cursor.filter.mTaskListPosition = cursor.getTaskPositionByTaskId(cursor.filter.mTaskId);
-		Map<String, Object> hm = cursor.mTaskList.get((int)cursor.filter.mTaskListPosition); 		
-		setTitle("Task "+(cursor.filter.mTaskListPosition+1)+" from "+cursor.mTaskList.size());
-		cursor.filter.mTaskId = Long.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_ID).toString());	
-		mText.setText(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_NAME).toString());
-		try{
-			mDeadline.setText(DateUtil.getClientDate(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_DEADLINE).toString()));
-		}catch(ParseException pe){
+		if(cursor.filter.mTaskListPosition!=-1){
+			Map<String, Object> hm = cursor.mTaskList.get((int)cursor.filter.mTaskListPosition); 		
+			setTitle("Task "+(cursor.filter.mTaskListPosition+1)+" from "+cursor.mTaskList.size());
+			cursor.filter.mTaskId = Long.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_ID).toString());	
+			mText.setText(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_NAME).toString());
+			try{
+				mDeadline.setText(DateUtil.getClientDate(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_DEADLINE).toString()));
+			}catch(ParseException pe){
+			}
+			mPriority.setText(TaskItem.getPriorityName(Integer.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_PRIORITY).toString())));
+			mDirection.setText(hm.get(DiaryDbHelper.TASK_DIRECTIONS_DIRECTIONS_NAME).toString());
+			mStatus.setText(TaskItem.getStatusName(Integer.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_STATUS).toString())));
 		}
-		mPriority.setText(TaskItem.getPriorityName(Integer.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_PRIORITY).toString())));
-		mDirection.setText(hm.get(DiaryDbHelper.TASK_DIRECTIONS_DIRECTIONS_NAME).toString());
-		mStatus.setText(TaskItem.getStatusName(Integer.valueOf(hm.get(DiaryDbHelper.TASK_DIRECTIONS_TASK_STATUS).toString())));
 		Button prevBtn = (Button)findViewById(R.id.prevBtn);
 		if(cursor.filter.mTaskListPosition!=-1){
 			if(cursor.filter.mTaskListPosition>0){

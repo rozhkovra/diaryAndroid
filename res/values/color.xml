@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="taskTextColor">#000000</color>
+    <color name="taskDoneColor">#ff93F09C</color>
+    <color name="taskLongColor">#fff9ab91</color>
+    
+</resources>

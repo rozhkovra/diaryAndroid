@@ -125,7 +125,8 @@ public class DiaryCursor {
 		}
 		SimpleAdapter adapter = new SimpleAdapter(context
 				, mDirectionList 
-				, android.R.layout.simple_spinner_item 										
+				//, android.R.layout.simple_spinner_item 										
+				, R.layout.direction_spinner_item
 				, new String[]{DiaryDbHelper.DIRECTIONS_NAME}
 				, new int[]{android.R.id.text1}
 		);

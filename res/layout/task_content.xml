@@ -120,7 +120,7 @@
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
 			android:drawSelectorOnTop="true"
- 		    />
+ 		    style="@style/DirectionSpinner"/>
         
     </LinearLayout>
     
