@@ -3,12 +3,14 @@ package smallmazila.diary.adapter;
 import java.util.List;
 import java.util.Map;
 
+import smallmazila.diary.R;
 import smallmazila.diary.TaskItem;
 import smallmazila.diary.db.DiaryDbHelper;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 public class TaskListSimpleAdapter extends SimpleAdapter {
 	private List<? extends Map<String, Object>> data;
@@ -30,7 +32,11 @@ public class TaskListSimpleAdapter extends SimpleAdapter {
 			view.setBackgroundColor(0xfff9ab91);  
 		} else {
 			view.setBackgroundColor(0xffFFFF78);
-		}
+/*			if(priority == TaskItem.PRIORITY_IMPORTANT_NOFAST){
+				TextView text = (TextView)view.findViewById(R.id.name);
+				text.setTextSize(12);
+			}
+*/		}
 		if(status == TaskItem.STATUS_YES)
 			view.setBackgroundColor(0xff93F09C);
 
